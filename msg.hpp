@@ -3,6 +3,7 @@
 
 #include "main.hpp"
 
+#define BERR_ACCEPT_SOCKET -3
 #define BERR_CREATE_SOCKET -2
 #define BERR_BIND_SOCKET -1
 #define BNET_SUCCESS 0
@@ -14,7 +15,7 @@ class b_ssocket {
         std::string tag; // nametag for our interaction
         int c_sock, d_sock;
         socklen_t s_len;
-        struct sockaddr_in s_sock;
+        struct sockaddr_in s_sock, t_sock;
         b_socket(std::string _tag) {
             // set some boilerplate bullshit
             tag = _tag;
@@ -37,20 +38,3 @@ class b_csocket {
             s_sock.sin_addr.s_addr = inet_addr(BE_IP);
         }
 };
-
-class msg {
-    public:
-        uint8_t type;
-        std::string data;
-        msg(std::string _data) {
-            data = _data;
-        }
-        void send(void *socket); // TODO: this function should translate std::string to char*
-};
-
-namespace server {
-    // TODO: same as above, translate to char*
-    std::string recv(void *socket);
-};
-
-#endif

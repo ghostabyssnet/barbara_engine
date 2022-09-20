@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "raylib.h"
+#include "msg.hpp"
 
 namespace Menu {
     class Button {

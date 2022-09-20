@@ -11,7 +11,6 @@ void DrawMenu(std::vector<Menu::Button> b) {
         DrawRectangle(b[x].x, b[x].y, b[x].w, b[x].h, b[x].c);
     }
 }
-
 void DrawGame() {
     return;
 }
