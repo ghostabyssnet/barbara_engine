@@ -1,0 +1,25 @@
+-- I
+game:
+    ! no pre-load screen (too lightweight to have one)
+    main menu:
+        matchmaking:
+            waiting screen
+        create server:
+            server name
+        join server:
+            server name (avoid having to type IP)
+        profile:
+            name
+            mmr
+    game:
+        no warmup or timers, school project
+-- II
+server:
+    threads:
+        matchmaking:
+            check for potential matches
+        game:
+            check plays and keep scores
+            update players' mmr
+        connection:
+            cringe bullshit
