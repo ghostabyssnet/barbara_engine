@@ -64,6 +64,17 @@ int main() {
     // setup server socket
     b_ssocket s("main");
     std::vector<std::thread> threads;
-    server::host(s);
+    // FIXME: placeholder, should be replaced with
+    // proper checks and stuff
+    bool placeholder = false; // check if a new thread should
+                              // be created
+    cout << "Running main server...";
+    // MAIN THREAD - check for connections
+    // TODO: main thread
+    placeholder = true;
+    // THREAD HANDLING - create/drop threads as connections come
+    // and go
+    // TODO: same as everything else. clean it up, spit it out
+    if (placeholder) server::host(s);
     return 0;
 }
