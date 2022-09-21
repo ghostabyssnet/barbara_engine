@@ -7,8 +7,9 @@
 // TODO: create event-to-string API here
 
 namespace server {
+    using namespace b_net;
     // host a gameserver instance
-    int host_instance(b_ssocket s) {
+    int host_instance(server_socket s) {
         bool quit = false;
         // boilerplate... TODO: the fuck?
         bzero((char*) &s.s_sock, sizeof(s.s_sock));
@@ -61,8 +62,9 @@ namespace server {
 }
 
 int main() {
+    using namespace b_net;
     // setup server socket
-    b_ssocket s("main");
+    server_socket s("main");
     std::vector<std::thread> threads;
     // FIXME: placeholder, should be replaced with
     // proper checks and stuff
