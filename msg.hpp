@@ -8,6 +8,10 @@
 #define BERR_BIND_SOCKET -1
 #define BNET_SUCCESS 0
 
+namespace server {
+    void debug(std::string f) {if(BE_DEBUG) cout << f;}
+}
+
 // C++ wrapper for C sockets
 namespace b_net {
     // (serverside)
@@ -62,12 +66,24 @@ namespace cunny {
     // etc -- whatever is cute and funny to do
     class server {
         public:
-            uint64_t id_clock; // msg clock (next ID to be used)
+            uint64_t id_count; // msg count (next ID to be used)
             b_net::server_socket s;
             server(b_net::server_socket _s) {
                 id_clock = 0;
                 s = _s;
             }
+            
+            // fired when the server sends a message
+            Event on_message_sent() {
+                id_count++;
+            }
+            
+            // same when it receives anything
+            Event on_message_received() {
+                // TODO: this
+            }
+            
+            uint8_t host_instance();
     };
     // msg CRUD
     b_net::msg make_msg(std::string data);

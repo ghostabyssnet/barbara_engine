@@ -15,7 +15,22 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
+
+// defines if we're in debug mode or not
+#define BE_DEBUG false
+
+// b_network constants
 #define NET_BUFFER_SIZE (uint16_t)4096
 #define BE_IP "127.0.0.1" // TODO: change to config file
 #define BE_PORT (int)8080
+
+class Event {
+    public:
+        // f = event_name
+        Event(std::string f) {
+            if (BE_DEBUG) cout << f;
+            delete(this);
+        }
+};
+
 #endif

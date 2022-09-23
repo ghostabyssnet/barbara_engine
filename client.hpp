@@ -5,6 +5,15 @@
 #include "raylib.h"
 #include "msg.hpp"
 
+namespace client {
+    void debug(std::string f) { 
+        if (BE_DEBUG) {
+            // TODO: FIXME
+            cout << "placeholder";
+        }
+    }
+}
+
 namespace Menu {
     class Button {
         public:

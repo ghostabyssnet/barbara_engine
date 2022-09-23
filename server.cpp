@@ -6,10 +6,10 @@
 
 // TODO: create event-to-string API here
 
-namespace server {
+namespace cunny {
     using namespace b_net;
     // host a gameserver instance
-    int host_instance(server_socket s) {
+    uint8_t server::host_instance() {
         bool quit = false;
         // boilerplate... TODO: the fuck?
         bzero((char*) &s.s_sock, sizeof(s.s_sock));
@@ -64,7 +64,8 @@ namespace server {
 int main() {
     using namespace b_net;
     // setup server socket
-    server_socket s("main");
+    server_socket _s("main");
+    cunny::server(_s) sv;
     std::vector<std::thread> threads;
     // FIXME: placeholder, should be replaced with
     // proper checks and stuff
@@ -77,6 +78,6 @@ int main() {
     // THREAD HANDLING - create/drop threads as connections come
     // and go
     // TODO: same as everything else. clean it up, spit it out
-    if (placeholder) server::host(s);
+    if (placeholder) sv::host_instance();
     return 0;
 }
