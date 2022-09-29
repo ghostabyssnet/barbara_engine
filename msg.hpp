@@ -85,6 +85,25 @@ namespace cunny {
             
             uint8_t host_instance();
     };
+   
+    class client : public server {
+        public:
+            client(){} // TODO: this 
+
+            Event on_move_end() {
+                // TODO: this
+            }
+
+            Event on_message_sent() {
+                // TODO: this
+            }
+
+            Event on_message_received() {
+                // TODO: this
+            }
+
+            uint8_t send_message();
+    
     // msg CRUD
     b_net::msg make_msg(std::string data);
 
