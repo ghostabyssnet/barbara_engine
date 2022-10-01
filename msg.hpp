@@ -72,7 +72,7 @@ namespace cunny {
                 id_clock = 0;
                 s = _s;
             }
-            
+          
             // fired when the server sends a message
             Event on_message_sent() {
                 id_count++;
