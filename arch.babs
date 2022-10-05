@@ -1,7 +1,39 @@
 # client
 
+on client startup:
+    show main menu
+
+on main menu click:
+    switch(menu_option):
+        case PLAY_GAME:
+            show new menu ({menu::matchmaking}, {menu::create}, {menu:: join})
+            break!
+        case GAME_OPTIONS:
+            show new menu ({animations::bool}, {sound::bool})
+            break!
+        case GAME_QUIT:
+            stop client
+            break!
+        default: NULL
+
 # server
 
-create a master thread
-create a thread for each room
+# cunny
 
+
+# database
+
+db object player:
+    id: uint64_t PRIMARY KEY
+    nick: varchar(255)
+    password: varchar(50)
+    rating: uint16_t
+
+db object skins:
+    id: uint64_t PRIMARY KEY
+    name: varchar(32)
+    slot: uint8_t # slot to be equipped, do a pseudo-enum idc
+
+db object ownedskins:
+    p_id: FOREIGN KEY
+    s_id: FOREIGN KEY

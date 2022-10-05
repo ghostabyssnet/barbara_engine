@@ -72,7 +72,17 @@ namespace cunny {
                 id_clock = 0;
                 s = _s;
             }
-          
+            
+            // when a player connects to the server
+            Event on_connect() {
+                // TODO: this
+            }
+
+            // when a player disconnects from the server
+            Event on_disconnect() {
+                // TODO: this
+            }
+
             // fired when the server sends a message
             Event on_message_sent() {
                 id_count++;
