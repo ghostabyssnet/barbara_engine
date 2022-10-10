@@ -8,7 +8,10 @@ namespace b_net {
     uint8_t cunny_t::host(server_socket s) {
         bool quit = false;
         // boilerplate... TODO: the fuck?
-        bzero((char*) &s.s_sock, sizeof(s.s_sock));
+        bzero((char*) &s.s_sock, sizeof(s.s_sock)); 
+        s.s_sock.sin_family = AF_INET;
+        s.s_sock.sin_port = htons(BE_PORT);
+        s.s_sock.sin_addr.s_addr = inet_addr(BE_IP);
         // create and bind server socket
         s.c_sock = socket(AF_INET, SOCK_STREAM, 0);
         if (s.c_sock < 0) return BERR_CREATE_SOCKET; // ERROR

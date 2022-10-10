@@ -8,7 +8,7 @@ namespace b_net {
     class client {
         public:
             client_socket c;
-            uint8_t new_conn(client_socket s);
+            short new_conn(client_socket s);
     };
 }
 
