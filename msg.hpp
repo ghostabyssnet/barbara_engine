@@ -3,6 +3,7 @@
 
 #include "main.hpp"
 #include "database.hpp"
+#define BERR_CONN_SOCKET -16
 #define BERR_ACCEPT_SOCKET -3
 #define BERR_CREATE_SOCKET -2
 #define BERR_BIND_SOCKET -1
@@ -35,6 +36,7 @@ namespace b_net {
             std::string tag;
             int c_sock;
             struct sockaddr_in s_sock;
+            struct hostent *server;
             client_socket() {
                 s_sock.sin_family = AF_INET;
                 s_sock.sin_port = htons(BE_PORT);

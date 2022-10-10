@@ -290,7 +290,7 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
-normal! 018|
+normal! 019|
 tabnext 5
 set stal=1
 badd +1 client.cpp
