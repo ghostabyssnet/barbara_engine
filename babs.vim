@@ -14,6 +14,7 @@ $argadd client.cpp
 set stal=2
 tabnew
 tabnew
+tabnew
 tabrewind
 edit client.cpp
 let s:save_splitbelow = &splitbelow
@@ -32,8 +33,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 48 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 47 + 48) / 96)
+exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -45,11 +46,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 12) / 24)
+let s:l = 18 - ((17 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 18
 normal! 0
 wincmd w
 argglobal
@@ -68,15 +69,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 12) / 24)
+let s:l = 1 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 48 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 47 + 48) / 96)
+exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
 tabnext
 edit server.cpp
 let s:save_splitbelow = &splitbelow
@@ -95,8 +96,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 48 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 47 + 48) / 96)
+exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
 argglobal
 balt client.cpp
 setlocal fdm=manual
@@ -109,19 +110,19 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 12) / 24)
+let s:l = 44 - ((22 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 02|
+keepjumps 44
+normal! 08|
 wincmd w
 argglobal
-if bufexists("msg.hpp") | buffer msg.hpp | else | edit msg.hpp | endif
+if bufexists("server.hpp") | buffer server.hpp | else | edit server.hpp | endif
 if &buftype ==# 'terminal'
-  silent file msg.hpp
+  silent file server.hpp
 endif
-balt server.cpp
+balt msg.hpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -132,15 +133,80 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 12) / 24)
+let s:l = 1 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 48 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 47 + 48) / 96)
+exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
+tabnext
+edit msg.hpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 75 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 75 + 75) / 151)
+argglobal
+balt server.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 4 - ((3 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 4
+normal! 0
+wincmd w
+argglobal
+if bufexists("database.hpp") | buffer database.hpp | else | edit database.hpp | endif
+if &buftype ==# 'terminal'
+  silent file database.hpp
+endif
+balt msg.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 13 - ((12 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 13
+normal! 0
+wincmd w
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 75 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 75 + 75) / 151)
 tabnext
 edit main.hpp
 let s:save_splitbelow = &splitbelow
@@ -159,8 +225,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 48 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 47 + 48) / 96)
+exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
 argglobal
 balt msg.hpp
 setlocal fdm=manual
@@ -173,7 +239,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 12) / 24)
+let s:l = 1 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -196,23 +262,25 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 12) / 24)
+let s:l = 1 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 48 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 47 + 48) / 96)
-tabnext 1
+exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
+tabnext 3
 set stal=1
 badd +1 client.cpp
-badd +0 client.hpp
 badd +1 server.cpp
-badd +0 msg.hpp
 badd +1 main.hpp
-badd +0 arch.babs
+badd +1 client.hpp
+badd +4 msg.hpp
+badd +1 arch.babs
+badd +0 server.hpp
+badd +0 database.hpp
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif

@@ -12,10 +12,12 @@
 // use winsock instead of socket.h
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <bits/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 #include <string.h>
-
+#include <unistd.h>
 // defines if we're in debug mode or not
 #define BE_DEBUG false
 
@@ -28,7 +30,7 @@ class Event {
     public:
         // f = event_name
         Event(std::string f) {
-            if (BE_DEBUG) cout << f;
+            if (BE_DEBUG) std::cout << f;
             delete(this);
         }
 };
