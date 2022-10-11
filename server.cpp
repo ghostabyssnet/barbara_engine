@@ -19,14 +19,23 @@ namespace b_net {
         // create and bind server socket
         s.c_sock = socket(AF_INET, SOCK_STREAM, 0);
         if (s.c_sock < 0) return BERR_CREATE_SOCKET; // ERROR
+        b_util::debug("Socket created successfully\n");
         if (bind(s.c_sock, (struct sockaddr*)&s.s_sock, sizeof(s.s_sock)) < 0) return BERR_BIND_SOCKET; 
+        b_util::debug("Socket binding complete\n");
         listen(s.c_sock, 5);
+        b_util::debug("listen() called...\n");
         s.s_len = sizeof(s.t_sock);
         while (quit == false) {
             s.d_sock = accept(s.c_sock, (struct sockaddr*) &s.t_sock, &s.s_len);
+            b_util::debug("accept() called\n");
+            // FIXME: this thing below is EXTREMELY cringe
+            // our server shouldn't stop EVER. and it specially
+            // shouldn't stop itself...! instead of returning,
+            // find some solution (or recreate the server instantly
+            // upon return... but it would still suck)
             if (s.d_sock < 0) return BERR_ACCEPT_SOCKET;
             // -- we actually do stuff here
-            // TODO: make this a while loop, handle stuff properly
+            // TODO: make this a while loop (done?), handle stuff properly
             handle_data(get_data(s.d_sock));
             // END
             close(s.d_sock);
@@ -44,21 +53,23 @@ namespace b_net {
         bzero(buffer, NET_BUFFER_SIZE);
         data = read(d_sock, buffer, (NET_BUFFER_SIZE - 1));
         if (data < 0) {
-            std::cout << "Error reading data";
+            std::cout << "Error reading data\n";
         }
-        msg.data = std::to_string(data);
+        else b_util::debug("New data: " + std::string(buffer) + "\n");
+        msg.data = std::string(buffer);
         msg.id = 99999; // FIXME: use cunny's id_count and stuff
         data = write(d_sock, "ACK", 3);
         if (data < 0) {
-            std::cout << "Error writing ACK to socket";
+            std::cout << "Error writing ACK to socket\n";
         }
+        else b_util::debug("Just wrote ACK to socket\n");
         return msg;
     }
 
     // handles the sent/received data itself
     // FIXME: do everything
     void cunny_t::handle_data(msg_t msg) {
-        if (msg.data == "BE_TEST") std::cout << "BE_TEST CALLED";
+        if (msg.data == "BE_TEST") std::cout << "BE_TEST CALLED\n";
     }
 }
 

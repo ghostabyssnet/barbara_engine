@@ -1,7 +1,5 @@
 #include "proto_client.hpp"
 
-
-
 namespace b_net {
     short client::new_conn(client_socket s) {
         int phld;
@@ -28,7 +26,7 @@ namespace b_net {
         s.s_sock.sin_port = htons(BE_PORT);
         // actually attempts to connect to the server
         if (connect(s.c_sock, (struct sockaddr*)&s.s_sock, sizeof(s.s_sock)) < 0) return BERR_CONN_SOCKET;
-        b_util::debug("Successfully connected to the server at " + std::to_string(BE_PORT) + "!\n");
+        b_util::debug("Successfully connected to the server at " + std::to_string(BE_IP) + ":" + std::to_string(BE_PORT) + "!\n");
         std::cout << "Type your message here or something:\n";
         bzero(buffer, 256);
         // using fgets because we can't be bothered to convert it to
