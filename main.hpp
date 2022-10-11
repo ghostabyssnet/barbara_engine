@@ -18,13 +18,20 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <unistd.h>
+
+// b_util constants and other stuff
+
 // defines if we're in debug mode or not
-#define BE_DEBUG false
+#define BE_DEBUG true
 
 // b_network constants
 #define NET_BUFFER_SIZE (uint16_t)4096
 #define BE_IP "127.0.0.1" // TODO: change to config file
 #define BE_PORT (int)8080
+
+namespace b_util {
+    void debug(std::string f) {if (BE_DEBUG) std::cout << f;}
+}
 
 class Event {
     public:

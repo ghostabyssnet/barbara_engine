@@ -6,8 +6,12 @@
 namespace b_net {
     // host a gameserver instance
     uint8_t cunny_t::host(server_socket s) {
-        bool quit = false;
-        // boilerplate... TODO: the fuck?
+        bool quit = false; 
+        /* resets our socket to its initial values
+         * (actually it nullifies everything in it)
+         * FIXME: should probably remove the class constructor
+         * if/when we have the time to do so, as it's being
+         * set to something then set to null...*/
         bzero((char*) &s.s_sock, sizeof(s.s_sock)); 
         s.s_sock.sin_family = AF_INET;
         s.s_sock.sin_port = htons(BE_PORT);

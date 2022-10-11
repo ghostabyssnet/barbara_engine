@@ -9,10 +9,6 @@
 #define BERR_BIND_SOCKET -1
 #define BNET_SUCCESS 0
 
-namespace server {
-    void debug(std::string f) {if(BE_DEBUG) std::cout << f;}
-}
-
 // C++ wrapper for C sockets
 namespace b_net {
     // (serverside)
