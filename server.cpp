@@ -69,7 +69,9 @@ namespace b_net {
     // handles the sent/received data itself
     // FIXME: do everything
     void cunny_t::handle_data(msg_t msg) {
-        if (msg.data == "BE_TEST") std::cout << "BE_TEST CALLED\n";
+        std::string data = msg.data;
+        data.pop_back(); // remove last character
+        if (data.compare(std::string("BE_TEST")) == 0) std::cout << "BE_TEST CALLED\n";
     }
 }
 
