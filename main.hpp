@@ -18,6 +18,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <unistd.h>
+#include <fstream>
 
 // b_util constants and other stuff
 
@@ -26,11 +27,31 @@
 
 // b_network constants
 #define NET_BUFFER_SIZE (uint16_t)4096
-#define BE_IP "127.0.0.1" // TODO: change to config file
+#define CFG_PATH "config.babs"
 #define BE_PORT (int)8080
 
 namespace b_util {
-    void debug(std::string f) {if (BE_DEBUG) std::cout << f;}
+    
+    void debug(std::string f) {if (BE_DEBUG) std::cout << f;} 
+    
+    bool file_exists(std::string name) {
+        std::ifstream f(name.c_str());
+        return f.good();
+    }
+    
+    std::string server_ip() {
+        bool flag = false;
+        std::string r;
+        if (!file_exists(CFG_PATH)) flag = true;
+        if (flag) {
+            std::ofstream f(CFG_PATH); 
+            f << "127.0.0.1"; // insert base IP to file if it doesn't exist
+            f.close();
+        }
+        std::ifstream _f(CFG_PATH);
+        std::getline(_f, r);
+        return r;
+    }
 }
 
 class Event {

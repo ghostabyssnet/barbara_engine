@@ -18,12 +18,6 @@ namespace b_net {
             int c_sock, d_sock;
             socklen_t s_len;
             struct sockaddr_in s_sock, t_sock;
-            server_socket() {
-                // set some boilerplate bullshit
-                s_sock.sin_family = AF_INET;
-                s_sock.sin_port = htons(BE_PORT);
-                s_sock.sin_addr.s_addr = inet_addr(BE_IP);
-            }
     };
 
     // (clientside)
@@ -33,11 +27,6 @@ namespace b_net {
             int c_sock;
             struct sockaddr_in s_sock;
             struct hostent *server;
-            client_socket() {
-                s_sock.sin_family = AF_INET;
-                s_sock.sin_port = htons(BE_PORT);
-                s_sock.sin_addr.s_addr = inet_addr(BE_IP);
-            }
     };
 
     // messages are used to transfer data between sockets,
