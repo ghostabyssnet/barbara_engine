@@ -1,9 +1,47 @@
 #include "client_cli.hpp"
 
 namespace b_net {
-    short client::new_conn(client_socket s) {
-        int phld;
+    void client::net_send(client_socket c) {
+        int _status;
         char buffer[256];
+        do {
+            std::cout << "Type your message here or something:\n";
+            bzero(buffer, 256);
+            // using fgets because we can't be bothered to convert it to
+            // cpp strings
+            b_util::debug("a\n");
+            fgets(buffer,255,stdin);
+            b_util::debug("b\n");
+            if(std::string(buffer).compare("BE_QUIT") == 0) { 
+                b_util::debug("c\n");
+                should_quit = true; 
+            }
+            else {
+                b_util::debug("d\n");
+                // adding MSG_NOSIGNAL so it doesn't abort on failed
+                // connection
+                _status = send(c.c_sock, buffer, strlen(buffer), MSG_NOSIGNAL);
+                b_util::debug("e\n");
+                if (_status < 0) b_util::debug("Error writing to socket\n");
+            }
+            b_util::debug("Waiting 10msecs...\n");
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            b_util::debug("Done!\n");
+        } while(should_quit == false);
+        b_util::debug("net_send() exiting gracefully.\n");
+    }
+    void client::net_recv(client_socket c) {
+        int _status;
+        char buffer[256];
+        while (should_quit == false) {
+            bzero(buffer, 256);
+            _status = read(c.c_sock, buffer, 255);
+            if (_status < 0) b_util::debug("Error reading from socket\n");
+            if (_status > 0) b_util::debug("DEBUG: " + std::string(buffer) + "\n");
+        }
+        b_util::debug("net_recv() exiting gracefully.\n");
+    }
+    short client::new_conn(client_socket s) {
         /* resets our socket to its initial values
          * (actually it nullifies everything in it)*/
         bzero((char*) &s.s_sock, sizeof(s.s_sock));
@@ -28,17 +66,14 @@ namespace b_net {
         // actually attempts to connect to the server
         if (connect(s.c_sock, (struct sockaddr*)&s.s_sock, sizeof(s.s_sock)) < 0) return BERR_CONN_SOCKET;
         b_util::debug("Successfully connected to the server at " + _ip + ":" + std::to_string(BE_PORT) + "!\n");
-        std::cout << "Type your message here or something:\n";
-        bzero(buffer, 256);
-        // using fgets because we can't be bothered to convert it to
-        // cpp strings
-        fgets(buffer,255,stdin);
-        phld = write(s.c_sock, buffer, strlen(buffer));
-        if (phld < 0) b_util::debug("Error writing to socket\n");
-        bzero(buffer, 256);
-        phld = read(s.c_sock, buffer, 255);
-        if (phld < 0) b_util::debug("Error reading from socket\n");
-        std::cout << std::string(buffer);
+        // create send and recv threads
+        std::thread send_t(&client::net_send, this, s);
+        std::thread recv_t(&client::net_recv, this, s);
+        recv_t.join();
+        send_t.join();
+        //while (should_quit == false) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        // close socket when we're done
+        b_util::debug("Closing socket...\n");
         close(s.c_sock);
         return 0;
     }
@@ -49,5 +84,6 @@ int main() {
     std::cout << "Starting prototype client...\n";
     short z = c.new_conn(c.c);
     std::cout << std::to_string(z) << std::endl;
+    std::cout << "Exiting gracefully.\n";
     return 0;
 }

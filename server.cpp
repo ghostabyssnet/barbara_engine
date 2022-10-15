@@ -4,8 +4,16 @@
 // also TODO: create makefile I guess
 
 namespace b_net {
+    void active_connection(server_socket s) {
+        /* TODO:
+         * while(1)
+         * if connection_severed() handle event_conn_severed_etc
+         * handle_data(and stuff)
+         */
+    }
+
     // host a gameserver instance
-    uint8_t cunny_t::host(server_socket s) {
+    short cunny_t::host(server_socket s) {
         bool quit = false; 
         /* resets our socket to its initial values
          * (actually it nullifies everything in it)*/
@@ -23,6 +31,7 @@ namespace b_net {
         b_util::debug("listen() called...\n");
         s.s_len = sizeof(s.t_sock);
         while (quit == false) {
+            std::cout << "stuff pls del me\n";
             s.d_sock = accept(s.c_sock, (struct sockaddr*) &s.t_sock, &s.s_len);
             b_util::debug("accept() called\n");
             // FIXME: this thing below is EXTREMELY cringe
@@ -32,8 +41,9 @@ namespace b_net {
             // upon return... but it would still suck)
             if (s.d_sock < 0) return BERR_ACCEPT_SOCKET;
             // -- we actually do stuff here
-            // TODO: make this a while loop (done?), handle stuff properly
-            handle_data(get_data(s.d_sock));
+            
+            // TODO: handle stuff properly
+            handle_data(get_data(s));
             // END
             close(s.d_sock);
         }
@@ -44,19 +54,19 @@ namespace b_net {
     // handles server-client interactions
     // returns false if something went wrong and we should quit
     // its design uses b_messages to handle stuff
-    msg_t cunny_t::get_data(int d_sock) {
+    msg_t cunny_t::get_data(server_socket s) {
         int data;
         char buffer[NET_BUFFER_SIZE];
         msg_t msg(0, "ERROR"); // placeholder message
         bzero(buffer, NET_BUFFER_SIZE);
-        data = read(d_sock, buffer, (NET_BUFFER_SIZE - 1));
+        data = read(s.d_sock, buffer, (NET_BUFFER_SIZE - 1));
         if (data < 0) {
             std::cout << "Error reading data\n";
         }
         else b_util::debug("New data: " + std::string(buffer) + "\n");
         msg.data = std::string(buffer);
         msg.id = 99999; // FIXME: use cunny's id_count and stuff
-        data = write(d_sock, "ACK", 3);
+        data = write(s.d_sock, "ACK", 3);
         if (data < 0) {
             std::cout << "Error writing ACK to socket\n";
         }
@@ -80,13 +90,16 @@ int main() {
     // proper checks and stuff
     bool placeholder = false; // check if a new thread should
                               // be created
-    std::cout << "Running main server...";
+    std::cout << "Running main server...\n";
     // MAIN THREAD - check for connections
     // TODO: main thread
     placeholder = true;
     // THREAD HANDLING - create/drop threads as connections come
     // and go
     // TODO: same as everything else. clean it up, spit it out
-    if (placeholder) server.cunny.host(server.cunny.serv);
+    if (placeholder) {
+        short z = server.cunny.host(server.cunny.serv);
+        std::cout << "debug: " << z << std::endl;
+    }
     return 0;
 }

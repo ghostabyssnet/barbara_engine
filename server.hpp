@@ -24,8 +24,8 @@ namespace b_net {
             uint64_t id_count = 1; // msg count (next ID to be used)
             server_socket serv;
             game_server gs;
-            uint8_t host(server_socket s);
-            msg_t get_data(int d_sock);
+            short host(server_socket s);
+            msg_t get_data(server_socket s);
             void handle_data(msg_t msg); // FIXME: should be uint8_t for errors (but I didn't think of any yet)
             // fired when a player connects to the server
             Event on_connect() {

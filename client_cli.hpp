@@ -14,8 +14,18 @@
 namespace b_net {
     class client {
         public:
+            bool should_quit = false;
             client_socket c;
+            
+            // creates a new connection to the server
             short new_conn(client_socket s);
+            
+            // creates a data output loop to the server
+            void net_send(client_socket c);
+
+            // creates an input loop that gets data from the server
+            void net_recv(client_socket c);
+
     };
 }
 
