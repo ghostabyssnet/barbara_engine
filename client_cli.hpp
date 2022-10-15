@@ -1,5 +1,5 @@
-#ifndef __CLIENT_HPP__
-#define __CLIENT_HPP__
+#ifndef __PROTO_HPP__
+#define __PROTO_HPP__
 
 #include "main.hpp"
 #include "msg.hpp"

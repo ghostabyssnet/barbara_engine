@@ -1,4 +1,4 @@
-#include "proto_client.hpp"
+#include "client_cli.hpp"
 
 namespace b_net {
     short client::new_conn(client_socket s) {

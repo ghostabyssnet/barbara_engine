@@ -1,1 +1,3 @@
 let client set target ip address to connect to
+maybe our database should be a simple .babs file unless we know what
+to do

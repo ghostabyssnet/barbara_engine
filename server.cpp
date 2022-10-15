@@ -12,7 +12,7 @@ namespace b_net {
         bzero((char*) &s.s_sock, sizeof(s.s_sock)); 
         s.s_sock.sin_family = AF_INET;
         s.s_sock.sin_port = htons(BE_PORT);
-        s.s_sock.sin_addr.s_addr = inet_addr(BE_IP);
+        //s.s_sock.sin_addr.s_addr = inet_addr(BE_IP);
         // create and bind server socket
         s.c_sock = socket(AF_INET, SOCK_STREAM, 0);
         if (s.c_sock < 0) return BERR_CREATE_SOCKET; // ERROR
@@ -38,6 +38,7 @@ namespace b_net {
             close(s.d_sock);
         }
     close(s.c_sock);
+    return 0;
     }
     
     // handles server-client interactions
