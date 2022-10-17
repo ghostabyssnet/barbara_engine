@@ -22,31 +22,16 @@ namespace b_net {
     class cunny_t {
         public:
             uint64_t id_count = 1; // msg count (next ID to be used)
+            std::vector<std::unique_ptr<std::thread>> conn_list;
             server_socket serv;
             game_server gs;
             short host(server_socket s);
             msg_t get_data(server_socket s);
-            void handle_data(msg_t msg); // FIXME: should be uint8_t for errors (but I didn't think of any yet)
-            // fired when a player connects to the server
-            Event on_connect() {
-                // TODO: this
-            }
-
-            // fired when a player disconnects from the server
-            Event on_disconnect() {
-                // TODO: this
-            }
-
-            // fired when the server sends a message
-            Event on_message_sent() {
-                id_count++;
-                // TODO: expand this maybe? idk what to write
-            }
             
-            // same when it receives anything
-            Event on_message_received() {
-                // TODO: this
-            } 
+            void new_conn(server_socket s);
+            // FIXME: ideally, this should use uint8_t to return
+            // multiple error types
+            bool handle_data(msg_t msg);
             
     };
     

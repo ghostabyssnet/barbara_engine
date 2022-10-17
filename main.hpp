@@ -54,13 +54,4 @@ namespace b_util {
     }
 }
 
-class Event {
-    public:
-        // f = event_name
-        Event(std::string f) {
-            if (BE_DEBUG) std::cout << f;
-            delete(this);
-        }
-};
-
 #endif

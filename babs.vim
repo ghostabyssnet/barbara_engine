@@ -111,12 +111,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 13 - ((12 * winheight(0) + 18) / 36)
+let s:l = 83 - ((25 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 13
-normal! 011|
+keepjumps 83
+normal! 018|
 wincmd w
 argglobal
 if bufexists("server.hpp") | buffer server.hpp | else | edit server.hpp | endif
@@ -134,12 +134,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 28 - ((26 * winheight(0) + 18) / 36)
+let s:l = 33 - ((21 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 28
-normal! 014|
+keepjumps 33
+normal! 035|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
 exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
@@ -272,9 +272,50 @@ wincmd w
 exe 'vert 1resize ' . ((&columns * 76 + 75) / 151)
 exe 'vert 2resize ' . ((&columns * 74 + 75) / 151)
 tabnext
-edit proto_client.cpp
+edit client_cli.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 75 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 75 + 75) / 151)
 argglobal
-balt main.hpp
+balt proto_client.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 9 - ((8 * winheight(0) + 18) / 36)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 9
+normal! 0
+wincmd w
+argglobal
+if bufexists("client_cli.hpp") | buffer client_cli.hpp | else | edit client_cli.hpp | endif
+if &buftype ==# 'terminal'
+  silent file client_cli.hpp
+endif
+balt client_cli.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -290,23 +331,31 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
-normal! 018|
+normal! 0
+wincmd w
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 75 + 75) / 151)
+exe 'vert 2resize ' . ((&columns * 75 + 75) / 151)
 tabnext 5
 set stal=1
 badd +1 client.cpp
 badd +1 server.cpp
 badd +1 main.hpp
+badd +38 proto_client.cpp
 badd +1 client.hpp
+badd +1 server.hpp
 badd +4 msg.hpp
+badd +1 database.hpp
 badd +1 arch.babs
-badd +0 server.hpp
-badd +0 database.hpp
-badd +0 proto_client.cpp
+badd +9 client_cli.cpp
+badd +0 client_cli.hpp
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20 shortmess=filnxtToOF
+let &winminheight = s:save_winminheight
+let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
