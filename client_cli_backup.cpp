@@ -1,37 +1,19 @@
 #include "client_cli.hpp"
 
 namespace b_net {
-    
-    void client::send_attempt(uint8_t hand) {
-        // TODO: ...? maybe not
-    }
-
     void client::net_send(client_socket c) {
         int _status;
-        int hand;
         char buffer[256];
         do {
-            std::cout << "Digite 1 para pedra, 2 para papel e 3 para tesoura...\nOu digite 0 para sair.\n";
+            std::cout << "Type your message here or something:\n";
             bzero(buffer, 256);
-            std::cin >> hand;
-            std::cout << '-' << hand << '-' << std::endl;;
-            if (!std::cin) std::cout << "Nao foi um numero valido, tente novamente.\n"; 
-            if (!my_turn) std::cout << "Nao e seu turno. Espere sua vez.\n";
-            // we would/will use should_quit for this, but we ain't
-            // bothering with it on the lite version
-            if (hand == 0) exit(0); 
+            // using fgets because we can't be bothered to convert it to
+            // cpp strings  
+            fgets(buffer,255,stdin);
+            if(std::string(buffer).compare("BE_QUIT") == 0) {  
+                should_quit = true; 
+            }
             else {
-                switch(hand) {
-                    case HAND_PAPER:
-                        strcpy(buffer, "BE_MOVE_PAPER");
-                        break;
-                    case HAND_SCISSORS:
-                        strcpy(buffer, "BE_MOVE_SCISSORS");
-                        break;
-                    case HAND_ROCK:
-                        strcpy(buffer, "BE_MOVE_ROCK");
-                        break;
-                }
                 // adding MSG_NOSIGNAL so it doesn't abort on failed
                 // connection
                 _status = send(c.c_sock, buffer, strlen(buffer), MSG_NOSIGNAL); 
@@ -43,7 +25,6 @@ namespace b_net {
         } while(should_quit == false);
         b_util::debug("net_send() exiting gracefully.\n");
     }
-
     void client::net_recv(client_socket c) {
         int _status;
         char buffer[256];

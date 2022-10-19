@@ -22,6 +22,7 @@ namespace b_net {
     class cunny_t {
         public:
             uint64_t id_count = 1; // msg count (next ID to be used)
+            // FIXME: unused for now
             std::vector<std::unique_ptr<std::thread>> conn_list;
             server_socket serv;
             game_server gs;
@@ -29,7 +30,8 @@ namespace b_net {
             msg_t get_data(server_socket s);
             
             void new_conn(server_socket s);
-            // FIXME: ideally, this should use uint8_t to return
+            
+            // ideally, this should use uint8_t to return
             // multiple error types
             bool handle_data(msg_t msg);
             

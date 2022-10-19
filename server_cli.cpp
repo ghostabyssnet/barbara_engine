@@ -1,5 +1,5 @@
 #include "main.hpp"
-#include "server.hpp"
+#include "server_cli.hpp"
 // use cmd <<serverpile>> to compile
 // also TODO: create makefile I guess
 
@@ -20,29 +20,36 @@ namespace b_net {
         msg_t msg(0, "ERROR"); // placeholder message
         bzero(buffer, NET_BUFFER_SIZE);
         data = read(s.d_sock, buffer, (NET_BUFFER_SIZE - 1));
-        else b_util::debug("New data: " + std::string(buffer) + "\n");
         msg.data = std::string(buffer);
         msg.id = 99999; // FIXME: use cunny's id_count and stuff
         data = write(s.d_sock, "ACK", 3);
-        else b_util::debug("Just wrote ACK to socket\n");
         return msg;
     }
 
+    void cunny_t::send_data(server_socket s, std::string data) {
+        write(s.d_sock, data.c_str(), sizeof(data.c_str()));
+    }
+
     // handles the sent/received data itself 
-    bool cunny_t::handle_data(msg_t msg) {
+    bool cunny_t::handle_data(msg_t msg, player p) {
         std::string data = msg.data;
         // stops our stuff from running when something goes wrong
         if (data.compare(std::string("ERROR")) == 0) return false; 
         data.pop_back(); // remove last character from string
-        // FIXME: do stuff properly
-        // and fix the fact that a client quitting crashes the server
+        
+        // FIXME: fix the fact that a client quitting crashes the server
+        
+        // handle codes
         if (data.compare(std::string("BE_TEST")) == 0) std::cout << "BE_TEST CALLED\n";
+        if (data.find(std::string("BE_MOVE_")) != std::string::npos) on_player_move(data, p);
         return true;
     }
 
     // handles a new connection and maintains dataflow
-    void cunny_t::new_conn(server_socket s) {
+    void cunny_t::new_conn(server_socket s, player p) {
         bool should_quit = false;
+        if (p.id == 1) send_data(s, "Espere pelo outro jogador.\n");
+        //else send_data(s, "Iniciando partida...\n");
         while (!should_quit) {
             // quit when something goes wrong
             // not ideal but fixing it goes 
@@ -69,8 +76,9 @@ namespace b_net {
         listen(s.c_sock, 5);
         b_util::debug("listen() called...\n");
         s.s_len = sizeof(s.t_sock);
+        // prepare the server for a new match
+        prepare();
         for (int x = 0; x < MAX_CONN; x++) {
-            std::cout << "stuff pls del me\n";
             s.d_sock = accept(s.c_sock, (struct sockaddr*) &s.t_sock, &s.s_len);
             b_util::debug("accept() called\n");
             if (s.d_sock < 0) b_util::debug("Error on accept(): " + std::to_string(s.d_sock));
@@ -80,9 +88,11 @@ namespace b_net {
             // find some solution (or recreate the server instantly
             // upon return... but it would still suck)
             if (s.d_sock < 0) return BERR_ACCEPT_SOCKET;
+            // create a new player with id (current_players + 1)
+            player _p = player((players.size() + 1)); 
             // create a new thread and add our new connection to it
-            //conn_list.emplace_back(new std::thread(&cunny_t::new_conn, this, s));
-            std::thread _conn(&cunny_t::new_conn, this, s);
+            std::thread _conn(&cunny_t::new_conn, this, s, _p);
+            players.emplace_back(_p);
             _conn.detach();
             // cleanup
             //close(s.d_sock);
