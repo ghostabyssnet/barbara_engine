@@ -68,10 +68,15 @@ namespace b_net {
                 game_state = STATE_MATCH;
                 broadcast("Iniciando uma nova partida...\n");
             }
-           
+
             // handles chat interaction between players
             void chat(std::string data, player p) {
-                // TODO: this
+                int z = p.id;
+                // get the other player
+                if (z == 1) z++;
+                else z--;
+                // send stuff
+                send_data(conn_list[z], data);
             }
 
             // checks if a player has already made their move
@@ -88,6 +93,16 @@ namespace b_net {
             
             // this event is fired whenever a player sends his move
             void on_player_move(std::string data, player p) {
+                // stops if the player is alone
+                if (game_state == STATE_WAIT) {
+                    send_data(conn_list[p.id - 1], "BE_ERROR_WAIT");
+                    return;
+                }
+                // stops if the player has already moved
+                if (has_moved(p)) {
+                    send_data(conn_list[p.id - 1], "BE_ERROR_MOVED");
+                    return;
+                }
                 if (data.compare(std::string("BE_MOVE_PAPER")) == 0) player_move(MOVE_PAPER, p); 
                 else if (data.compare(std::string("BE_MOVE_SCISSORS")) == 0) player_move(MOVE_SCISSORS, p);
                 else if (data.compare(std::string("BE_MOVE_ROCK")) == 0) player_move(MOVE_ROCK, p);
@@ -147,7 +162,7 @@ namespace b_net {
             }
 
             void end_match(uint8_t winner) {
-                broadcast("O jogador " + std::to_string((winner + 1)) + "venceu a partida!\n");
+                broadcast("O jogador " + std::to_string(winner) + "venceu a partida!\n");
                 start_match();
             }
 

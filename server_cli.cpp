@@ -42,7 +42,7 @@ namespace b_net {
         
         // handle codes
         if (data.compare(std::string("BE_TEST")) == 0) std::cout << "BE_TEST CALLED\n";
-        if (data.find(std::string("BE_MOVE_")) != std::string::npos) on_player_move(data, p);
+        else if (data.find(std::string("BE_MOVE_")) != std::string::npos) on_player_move(data, p);
         else chat(data, p);
         return true;
     }
