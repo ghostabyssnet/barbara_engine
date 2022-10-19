@@ -25,7 +25,8 @@ namespace b_net {
         data = write(s.d_sock, "ACK", 3);
         return msg;
     }
-
+    
+    // a c++ wrapper for socket writing/sending
     void cunny_t::send_data(server_socket s, std::string data) {
         write(s.d_sock, data.c_str(), sizeof(data.c_str()));
     }
@@ -42,6 +43,7 @@ namespace b_net {
         // handle codes
         if (data.compare(std::string("BE_TEST")) == 0) std::cout << "BE_TEST CALLED\n";
         if (data.find(std::string("BE_MOVE_")) != std::string::npos) on_player_move(data, p);
+        else chat(data, p);
         return true;
     }
 
@@ -54,7 +56,7 @@ namespace b_net {
             // quit when something goes wrong
             // not ideal but fixing it goes 
             // beyond the scope of this project
-            if (!handle_data(get_data(s))) should_quit = true;
+            if (!handle_data(get_data(s), p)) should_quit = true;
         }
     }
 
@@ -94,8 +96,9 @@ namespace b_net {
             std::thread _conn(&cunny_t::new_conn, this, s, _p);
             players.emplace_back(_p);
             _conn.detach();
+            on_connect();
             // cleanup
-            //close(s.d_sock);
+            if (players.size() >= 2) close(s.d_sock);
         }
     close(s.c_sock);
     return 0;
