@@ -156,7 +156,7 @@ namespace b_net {
                 if (winner == 1) players[0].score++;
                 else if (winner == 2) players[1].score++;
                 if (winner == 0) broadcast("Empate!\n");
-                else broadcast("O jogador " + std::to_string(winner) + " ganhou este round.\n");
+                else broadcast("O jogador " + std::to_string(winner) + " ganhou este round.\nPlacar: " + std::to_string(players[0].score) + " - " + std::to_string(players[1].score) +"\n");
                 bool _r = check_match_end();
                 // will reset scores as well if the match has ended
                 reset_players(_r);
