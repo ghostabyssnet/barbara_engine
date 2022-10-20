@@ -46,8 +46,7 @@ namespace b_net {
         // FIXME: fix the fact that a client quitting crashes the server
         
         // handle codes
-        if (data.compare(std::string("BE_TEST")) == 0) std::cout << "BE_TEST CALLED\n";
-        else if (data.find(std::string("BE_MOVE_")) != std::string::npos) on_player_move(data, p);
+        if (data.find(std::string("BE_MOVE_")) != std::string::npos) on_player_move(data, p);
         else chat(data, p);
         return true;
     }
@@ -115,22 +114,8 @@ namespace b_net {
 }
 
 int main() {
-    std::vector<std::thread> threads;
     b_net::server server;
-    // FIXME: placeholder, should be replaced with
-    // proper checks and stuff
-    bool placeholder = false; // check if a new thread should
-                              // be created
-    std::cout << "Running main server...\n";
-    // MAIN THREAD - check for connections
-    // TODO: main thread
-    placeholder = true;
-    // THREAD HANDLING - create/drop threads as connections come
-    // and go
-    // TODO: same as everything else. clean it up, spit it out
-    if (placeholder) {
-        short z = server.cunny.host(server.cunny.serv);
-        std::cout << "debug: " << z << std::endl;
-    }
+    short z = server.cunny.host(server.cunny.serv);
+    std::cout << "Exiting: " << z << std::endl;
     return 0;
 }

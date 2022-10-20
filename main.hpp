@@ -23,7 +23,7 @@
 // b_util constants and other stuff
 
 // defines if we're in debug mode or not
-#define BE_DEBUG true
+#define BE_DEBUG false
 
 // b_network constants
 #define NET_BUFFER_SIZE (int)256
