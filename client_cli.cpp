@@ -1,46 +1,47 @@
 #include "client_cli.hpp"
 
 namespace b_net {
-    
-    void client::send_attempt(uint8_t hand) {
-        // TODO: ...? maybe not
+   
+    void client::handle_data(std::string data) {
+        if (data.compare("ACK") == 0) return; // ignore ACKs
+        if (data.compare("BE_ERROR_WAIT") == 0) std::cout << "A partida ainda nao foi iniciada! Aguarde pelo outro jogador.\n";
+        else if (data.compare(std::string("BE_ERROR_MOVED")) == 0) std::cout << "Voce ja moveu neste turno!\n";
+        // it should be a broadcast() by now
+        else std::cout << data << std::endl;
     }
 
     void client::net_send(client_socket c) {
         int _status;
         int hand;
-        char buffer[256];
+        std::string buffer;
         do {
             std::cout << "Digite 1 para pedra, 2 para papel e 3 para tesoura...\nOu digite 0 para sair.\n";
-            bzero(buffer, 256);
             std::cin >> hand;
-            std::cout << '-' << hand << '-' << std::endl;;
             if (!std::cin) std::cout << "Nao foi um numero valido, tente novamente.\n"; 
-            if (!my_turn) std::cout << "Nao e seu turno. Espere sua vez.\n";
             // we would/will use should_quit for this, but we ain't
             // bothering with it on the lite version
             if (hand == 0) exit(0); 
             else {
                 switch(hand) {
                     case HAND_PAPER:
-                        strcpy(buffer, "BE_MOVE_PAPER");
+                        buffer = "BE_MOVE_PAPER";
                         break;
                     case HAND_SCISSORS:
-                        strcpy(buffer, "BE_MOVE_SCISSORS");
+                        buffer = "BE_MOVE_SCISSORS";
                         break;
                     case HAND_ROCK:
-                        strcpy(buffer, "BE_MOVE_ROCK");
+                        buffer = "BE_MOVE_ROCK";
                         break;
                 }
                 // adding MSG_NOSIGNAL so it doesn't abort on failed
                 // connection
-                _status = send(c.c_sock, buffer, strlen(buffer), MSG_NOSIGNAL); 
+                _status = send(c.c_sock, buffer.c_str(), strlen((buffer.c_str())), MSG_NOSIGNAL); 
                 if (_status < 0) b_util::debug("Error writing to socket\n");
             }
             b_util::debug("Waiting 10msecs...\n");
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
             b_util::debug("Done!\n");
-        } while(should_quit == false);
+        } while (should_quit == false);
         b_util::debug("net_send() exiting gracefully.\n");
     }
 
@@ -51,21 +52,23 @@ namespace b_net {
             bzero(buffer, 256);
             _status = read(c.c_sock, buffer, 255);
             if (_status < 0) b_util::debug("Error reading from socket\n");
-            if (_status > 0) b_util::debug("DEBUG: " + std::string(buffer) + "\n");
+            if (_status > 0) b_util::debug(std::string(buffer) + "\n");
+            // send our received packet to be handled
+            handle_data(std::string(buffer));
         }
         b_util::debug("net_recv() exiting gracefully.\n");
     }
+
     short client::new_conn(client_socket s) {
         /* resets our socket to its initial values
-         * (actually it nullifies everything in it)*/
+         * (actually it nullifies everything in it) */
         bzero((char*) &s.s_sock, sizeof(s.s_sock));
         // sets our (int) socket... type? to a socket... somehow
         s.c_sock = socket(AF_INET, SOCK_STREAM, 0);
         if (s.c_sock < 0) b_util::debug("Error opening socket at new_conn()\n");
         // get our ip from cfg
         std::string _ip = b_util::server_ip();
-        // FIXME: worked without converting to c_str() for some reason.
-        // test properly later
+        // worked fine without converting to c_str() for some reason
         s.server = gethostbyname(_ip.c_str());
         if (s.server == NULL) b_util::debug("Error connecting to server: no such host\n");
         s.s_sock.sin_family = AF_INET;
@@ -85,7 +88,6 @@ namespace b_net {
         std::thread recv_t(&client::net_recv, this, s);
         recv_t.join();
         send_t.join();
-        //while (should_quit == false) std::this_thread::sleep_for(std::chrono::milliseconds(10));
         // close socket when we're done
         b_util::debug("Closing socket...\n");
         close(s.c_sock);

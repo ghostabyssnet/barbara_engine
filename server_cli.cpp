@@ -1,12 +1,13 @@
 #include "main.hpp"
 #include "server_cli.hpp"
+
 // use cmd <<serverpile>> to compile
 // also TODO: create makefile I guess
 
 // known bug: server will actually return 0 and quit on n-1 connections
 // this WOULD suck under normal circumstances, but we've not been
 // handling connection errors and stuff properly for a while now,
-// so it's not a good time to be a hypocrite
+// so it's not a good time to be hypocritical
 #define MAX_CONN 3
 
 namespace b_net {
@@ -19,25 +20,29 @@ namespace b_net {
         char buffer[NET_BUFFER_SIZE];
         msg_t msg(0, "ERROR"); // placeholder message
         bzero(buffer, NET_BUFFER_SIZE);
+        b_util::debug("_a\n");
         data = read(s.d_sock, buffer, (NET_BUFFER_SIZE - 1));
-        msg.data = std::string(buffer);
+        b_util::debug("_b\n");
+        if (data > 0) msg.data = std::string(buffer);
+        b_util::debug("_c\n");
         msg.id = 99999; // FIXME: use cunny's id_count and stuff
         data = write(s.d_sock, "ACK", 3);
+        b_util::debug("_d\n");
         return msg;
     }
     
     // a c++ wrapper for socket writing/sending
     void cunny_t::send_data(server_socket s, std::string data) {
-        write(s.d_sock, data.c_str(), sizeof(data.c_str()));
+        write(s.d_sock, data.c_str(), strlen(data.c_str()));
     }
 
     // handles the sent/received data itself 
     bool cunny_t::handle_data(msg_t msg, player p) {
         std::string data = msg.data;
+        b_util::debug("_one\n");
         // stops our stuff from running when something goes wrong
         if (data.compare(std::string("ERROR")) == 0) return false; 
-        data.pop_back(); // remove last character from string
-        
+        b_util::debug("_two\n");
         // FIXME: fix the fact that a client quitting crashes the server
         
         // handle codes
@@ -53,10 +58,13 @@ namespace b_net {
         if (p.id == 1) send_data(s, "Espere pelo outro jogador.\n");
         //else send_data(s, "Iniciando partida...\n");
         while (!should_quit) {
+            b_util::debug("_conn\n");
             // quit when something goes wrong
             // not ideal but fixing it goes 
             // beyond the scope of this project
+            b_util::debug("_lambda\n");
             if (!handle_data(get_data(s), p)) should_quit = true;
+            b_util::debug("_radius\n");
         }
     }
 
@@ -91,14 +99,15 @@ namespace b_net {
             // upon return... but it would still suck)
             if (s.d_sock < 0) return BERR_ACCEPT_SOCKET;
             // create a new player with id (current_players + 1)
-            player _p = player((players.size() + 1)); 
+            player _p((players.size() + 1)); 
             // create a new thread and add our new connection to it
             std::thread _conn(&cunny_t::new_conn, this, s, _p);
             players.emplace_back(_p);
+            conn_list.emplace_back(s);
             _conn.detach();
             on_connect();
             // cleanup
-            if (players.size() >= 2) close(s.d_sock);
+            //if (players.size() >= 2) close(s.d_sock);
         }
     close(s.c_sock);
     return 0;

@@ -26,13 +26,13 @@
 #define BE_DEBUG true
 
 // b_network constants
-#define NET_BUFFER_SIZE (uint16_t)4096
+#define NET_BUFFER_SIZE (int)256
 #define CFG_PATH "config.babs"
 #define BE_PORT (int)8080
 
 namespace b_util {
     
-    void debug(std::string f) {if (BE_DEBUG) std::cout << f;} 
+    void debug(std::string f) { if (BE_DEBUG) std::cout << "[DEBUG] " << f; } 
     
     bool file_exists(std::string name) {
         std::ifstream f(name.c_str());

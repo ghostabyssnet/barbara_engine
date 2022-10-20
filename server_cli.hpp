@@ -6,7 +6,6 @@
 
 #define STATE_WAIT 0
 #define STATE_MATCH 1
-#define STATE_END 2 // FIXME: check if we're going to use this
 
 #define MOVE_NONE 0
 #define MOVE_PAPER 1
@@ -17,7 +16,7 @@ namespace b_net {
 
     class player {
         public:
-            uint8_t id;
+            uint8_t id = 1;
             uint8_t score = 0;
             uint8_t move = MOVE_NONE;
             player(uint8_t _id) {
@@ -45,6 +44,7 @@ namespace b_net {
             // broadcast a message to all players
             // sends to the server as well for logging purposes
             void broadcast(std::string data) {
+                b_util::debug("_bc\n");
                 for (int x = 0; x < conn_list.size(); x++) {
                     send_data(conn_list[x], data);
                 }
@@ -71,6 +71,7 @@ namespace b_net {
 
             // handles chat interaction between players
             void chat(std::string data, player p) {
+                b_util::debug("_chat\n");
                 int z = p.id;
                 // get the other player
                 if (z == 1) z++;
@@ -84,29 +85,29 @@ namespace b_net {
                 if (p.move == MOVE_NONE) return false;
                 return true;
             }
-            
-            // handles whatever move was played
-            void player_move(uint8_t move, player p) {
-                p.move = move;
-                broadcast("O jogador " + std::to_string(p.id) + " preparou sua mao.\n");
-            }
-            
+             
             // this event is fired whenever a player sends his move
-            void on_player_move(std::string data, player p) {
+            void on_player_move(std::string data, player _p) {
+                player& p = players[(_p.id - 1)];
+                b_util::debug("_move\n");
                 // stops if the player is alone
-                if (game_state == STATE_WAIT) {
-                    send_data(conn_list[p.id - 1], "BE_ERROR_WAIT");
+                b_util::debug(data + "\n");
+                if (game_state == STATE_WAIT) { 
+                    b_util::debug("_pid\n");
+                    send_data(conn_list[((int)p.id - 1)], "BE_ERROR_WAIT");
                     return;
                 }
+                b_util::debug("_phasetwo\n");
                 // stops if the player has already moved
                 if (has_moved(p)) {
-                    send_data(conn_list[p.id - 1], "BE_ERROR_MOVED");
+                    b_util::debug("_ligma " + std::to_string(p.id));
+                    send_data(conn_list[((int)p.id - 1)], "BE_ERROR_MOVED");
                     return;
                 }
-                if (data.compare(std::string("BE_MOVE_PAPER")) == 0) player_move(MOVE_PAPER, p); 
-                else if (data.compare(std::string("BE_MOVE_SCISSORS")) == 0) player_move(MOVE_SCISSORS, p);
-                else if (data.compare(std::string("BE_MOVE_ROCK")) == 0) player_move(MOVE_ROCK, p);
-                
+                if (data.find("BE_MOVE_PAPER") != std::string::npos) p.move = MOVE_PAPER; 
+                else if (data.find("BE_MOVE_SCISSORS") != std::string::npos) p.move = MOVE_SCISSORS;
+                else if (data.find("BE_MOVE_ROCK") != std::string::npos) p.move = MOVE_ROCK;
+                broadcast("O jogador " + std::to_string(p.id) + " preparou sua mao.\n");
                 // resolve the players' turns if both of them already
                 // made their move
                 if (players[0].move != MOVE_NONE && players[1].move != MOVE_NONE) resolve();
@@ -162,7 +163,7 @@ namespace b_net {
             }
 
             void end_match(uint8_t winner) {
-                broadcast("O jogador " + std::to_string(winner) + "venceu a partida!\n");
+                broadcast("O jogador " + std::to_string(winner + 1) + " venceu a partida!\n");
                 start_match();
             }
 
@@ -179,7 +180,7 @@ namespace b_net {
     class server {
         public:
             cunny_t cunny;
-            database_t db;            
+            // database_t db;            
     };
 }
 #endif
